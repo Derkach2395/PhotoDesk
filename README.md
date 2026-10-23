@@ -23,11 +23,14 @@ PhotoDesk is a photography studio workspace for managing clients, photo sessions
 
 ### Start the API and database
 
-From the project root:
+From the project root, create your local environment file and set a unique database password before the first start:
 
 ```bash
+cp .env.example .env
 docker compose up --build
 ```
+
+In PowerShell, use `Copy-Item .env.example .env` instead of `cp`. Docker Compose reads `.env` automatically. The `.env` file is ignored by Git; keep real credentials there and never commit it. Use a URL-safe password (letters, numbers, `_` or `-`) for the local Compose database URL.
 
 The API runs at <http://localhost:8000>. Open <http://localhost:8000/docs> for the interactive API documentation. On first start, the app creates its tables and adds sample records.
 
@@ -71,7 +74,7 @@ docker-compose.yml
 
 ## Configuration and deployment
 
-Local environment examples are in `.env.example` and `frontend/.env.example`. Compose credentials are for local development only. See [DEPLOYMENT.md](DEPLOYMENT.md) for hosting configuration and the production readiness checklist.
+Local environment examples are in `.env.example` and `frontend/.env.example`. Docker Compose reads database credentials and CORS origins from the ignored local `.env` file. See [DEPLOYMENT.md](DEPLOYMENT.md) for hosting configuration and the production readiness checklist.
 
 ## Tech stack
 
