@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: photodesk-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: photodesk
+      POSTGRES_USER: photodesk
+      POSTGRES_PASSWORD: REDACTED_NOT_A_SECRET
+    ports:
+      - "5432:5432"
+    volumes:
+      - photodesk_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U photodesk -d photodesk"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  backend:
+    build: ./backend
+    container_name: photodesk-api
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+psycopg://photodesk:REDACTED_NOT_A_SECRET@db:5432/photodesk
+      CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  photodesk_data:
